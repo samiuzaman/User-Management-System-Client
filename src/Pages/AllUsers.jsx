@@ -1,16 +1,66 @@
-import { Table, TableHead, TableHeader, TableRow, Button } from "keep-react";
+import {
+  Table,
+  TableHead,
+  TableHeader,
+  TableRow,
+  Button,
+  TableCell,
+  TableBody,
+} from "keep-react";
+import { useEffect, useState } from "react";
 import { FaUserLarge } from "react-icons/fa6";
-import { NavLink } from "react-router";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { Link, NavLink } from "react-router";
+import Swal from "sweetalert2";
 
 const AllUsers = () => {
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/allusers")
+      .then((res) => res.json())
+      .then((data) => setUsers(data));
+  }, [setUsers]);
+
+  const handleDelete = (id) => {
+    console.log(id);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:5000/allusers/${id}`, {
+          method: "delete",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            if (data.deletedCount > 0) {
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success",
+              });
+              const remainingUsers = users.filter((user) => user?._id !== id);
+              setUsers(remainingUsers);
+            }
+          });
+      }
+    });
+  };
+
   return (
     <div>
       <Button variant="outline">
-        <NavLink to="/newusers" className="flex gap-2 items-center">
+        <NavLink to="/newusers" className="flex gap-2 users-center">
           New Users <FaUserLarge />
         </NavLink>
       </Button>
-      <div>
+      <div className="my-8">
         <Table>
           <TableHeader className="bg-[#282D41]">
             <TableRow>
@@ -18,10 +68,10 @@ const AllUsers = () => {
                 <div className="max-w-[40px]">Id</div>
               </TableHead>
               <TableHead className="bg-[#282D41] text-white">
-                <div className="max-w-[200px]">Name</div>
+                <div className="max-w-[250px]">Name</div>
               </TableHead>
               <TableHead className="bg-[#282D41] text-white">
-                <div className="w-[150px]">Email</div>
+                <div>Email</div>
               </TableHead>
               <TableHead className="bg-[#282D41] text-white">
                 <div className="w-[50px]">Gender</div>
@@ -34,20 +84,29 @@ const AllUsers = () => {
               </TableHead>
             </TableRow>
           </TableHeader>
-          {/* <TableBody>
-            {tableData.map((item) => (
-              <TableRow key={item.id}>
+          <TableBody>
+            {users?.map((user, index) => (
+              <TableRow key={user._id}>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell>
-                  <div className="max-w-[250px] truncate">{item.fileName}</div>
+                  <div className="max-w-[250px] truncate">{user.name}</div>
                 </TableCell>
-                <TableCell>{item.fileFormat}</TableCell>
-                <TableCell>{item.ratio}</TableCell>
-                <TableCell>{item.resolution}</TableCell>
-                <TableCell>{item.fileSize}</TableCell>
-                <TableCell>{item.status}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.gender}</TableCell>
+                <TableCell>{user.status}</TableCell>
+                <TableCell className="flex justify-between">
+                  <Link>
+                    <MdEdit className="bg-[#3C393B] text-white text-2xl" />
+                  </Link>
+
+                  <MdDelete
+                    onClick={() => handleDelete(user?._id)}
+                    className="bg-[#EA4744] text-white text-2xl"
+                  />
+                </TableCell>
               </TableRow>
             ))}
-          </TableBody> */}
+          </TableBody>
         </Table>
       </div>
     </div>

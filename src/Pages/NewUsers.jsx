@@ -1,9 +1,35 @@
 import { NavLink } from "react-router";
 import { FaUserLarge } from "react-icons/fa6";
-import { Envelope, Lock, User } from "phosphor-react";
+import { Envelope, User } from "phosphor-react";
 import { Button, InputIcon, Input, Label } from "keep-react";
+import Swal from "sweetalert2";
 
 const NewUsers = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const user = { name, email };
+    console.log(user);
+    fetch("http://localhost:5000/allusers", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Create user in DB", data);
+        if (data.acknowledged) {
+          Swal.fire({
+            text: "User Inserted Successfully!",
+            icon: "success",
+          });
+        }
+      });
+  };
   return (
     <div>
       <Button variant="outline">
@@ -12,7 +38,10 @@ const NewUsers = () => {
         </NavLink>
       </Button>
       <div>
-        <form className="mx-auto lg:w-5/6 space-y-2 rounded-lg border p-8 shadow-md my-12">
+        <form
+          onSubmit={handleSubmit}
+          className="mx-auto lg:w-5/6 space-y-2 rounded-lg border p-8 shadow-md my-12"
+        >
           <div className="text-center mb-8">
             <h3 className="text-black text-2xl font-bold">New User</h3>
             <p className="text-gray-500">
@@ -23,7 +52,7 @@ const NewUsers = () => {
           <fieldset className="space-y-1">
             <Label htmlFor="name">Name</Label>
             <div className="relative">
-              <Input placeholder="Enter Name" className="ps-11" />
+              <Input name="name" placeholder="Enter Name" className="ps-11" />
               <InputIcon>
                 <User size={19} color="#AFBACA" />
               </InputIcon>
@@ -33,7 +62,7 @@ const NewUsers = () => {
           <fieldset className="space-y-1">
             <Label htmlFor="email">Email</Label>
             <div className="relative">
-              <Input placeholder="Enter email" className="ps-11" />
+              <Input name="email" placeholder="Enter email" className="ps-11" />
               <InputIcon>
                 <Envelope size={19} color="#AFBACA" />
               </InputIcon>
@@ -69,7 +98,7 @@ const NewUsers = () => {
             type="submit"
             className="w-full bg-[#14D791]"
           >
-            Sign In
+            Save
           </Button>
         </form>
       </div>
