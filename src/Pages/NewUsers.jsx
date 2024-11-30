@@ -10,9 +10,11 @@ const NewUsers = () => {
     const form = event.target;
     const name = form.name.value;
     const email = form.email.value;
-    const user = { name, email };
-    console.log(user);
-    fetch("http://localhost:5000/allusers", {
+    const gender = form.gender.value;
+    const status = form.status.value;
+    const user = { name, email, gender, status };
+
+    fetch("https://user-management-system-server-sage.vercel.app/allusers", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -21,7 +23,6 @@ const NewUsers = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Create user in DB", data);
         if (data.acknowledged) {
           Swal.fire({
             text: "User Inserted Successfully!",
@@ -72,11 +73,11 @@ const NewUsers = () => {
           <div className="flex items-center gap-8  py-4">
             <h4 className="text-gray-500">Gender:</h4>
             <fieldset className=" flex items-center gap-2">
-              <input type="radio" id="male" name="gender" />
+              <input type="radio" id="male" name="gender" value="Male" />
               <label>Male</label>
             </fieldset>
             <fieldset className=" flex items-center gap-2">
-              <input type="radio" id="male" name="gender" />
+              <input type="radio" id="male" name="gender" value="Female" />
               <label>Female</label>
             </fieldset>
           </div>
@@ -84,11 +85,11 @@ const NewUsers = () => {
           <div className="flex items-center gap-8  pb-4">
             <h4 className="text-gray-500">Status:</h4>
             <fieldset className=" flex items-center gap-2">
-              <input type="radio" id="male" name="gender" />
+              <input type="radio" id="male" name="status" value="Active" />
               <label>Active</label>
             </fieldset>
             <fieldset className=" flex items-center gap-2">
-              <input type="radio" id="male" name="gender" />
+              <input type="radio" id="male" name="status" value="Inactive" />
               <label>Inactive</label>
             </fieldset>
           </div>
@@ -96,7 +97,7 @@ const NewUsers = () => {
             size="sm"
             color="secondary"
             type="submit"
-            className="w-full bg-[#14D791]"
+            className="w-full bg-[#14D791] text-black hover:text-white"
           >
             Save
           </Button>

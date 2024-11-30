@@ -16,13 +16,12 @@ import Swal from "sweetalert2";
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/allusers")
+    fetch("https://user-management-system-server-sage.vercel.app/allusers")
       .then((res) => res.json())
       .then((data) => setUsers(data));
   }, [setUsers]);
 
   const handleDelete = (id) => {
-    console.log(id);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -33,12 +32,14 @@ const AllUsers = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/allusers/${id}`, {
-          method: "delete",
-        })
+        fetch(
+          `https://user-management-system-server-sage.vercel.app/allusers/${id}`,
+          {
+            method: "delete",
+          }
+        )
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
             if (data.deletedCount > 0) {
               Swal.fire({
                 title: "Deleted!",
