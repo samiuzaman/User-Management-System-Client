@@ -14,7 +14,7 @@ const NewUsers = () => {
     const status = form.status.value;
     const user = { name, email, gender, status };
 
-    fetch("https://user-management-system-server-sage.vercel.app/allusers", {
+    fetch("https://users-manage-system.vercel.app/allusers", {
       method: "POST",
       headers: {
         "content-type": "application/json",

@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
-    fetch("https://user-management-system-server-sage.vercel.app/allusers")
+    fetch("https://users-manage-system.vercel.app/allusers")
       .then((res) => res.json())
       .then((data) => setUsers(data));
   }, [setUsers]);
@@ -32,12 +32,9 @@ const AllUsers = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(
-          `https://user-management-system-server-sage.vercel.app/allusers/${id}`,
-          {
-            method: "delete",
-          }
-        )
+        fetch(`https://users-manage-system.vercel.app/allusers/${id}`, {
+          method: "delete",
+        })
           .then((res) => res.json())
           .then((data) => {
             if (data.deletedCount > 0) {
@@ -96,7 +93,7 @@ const AllUsers = () => {
                 <TableCell>{user.gender}</TableCell>
                 <TableCell>{user.status}</TableCell>
                 <TableCell className="flex justify-between">
-                  <Link>
+                  <Link to={`/updateuser/${user._id}`}>
                     <MdEdit className="bg-[#3C393B] text-white text-2xl" />
                   </Link>
 
